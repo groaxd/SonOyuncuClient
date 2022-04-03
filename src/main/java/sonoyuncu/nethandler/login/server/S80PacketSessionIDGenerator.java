@@ -11,24 +11,24 @@ import java.security.PublicKey;
 
 
 public class S80PacketSessionIDGenerator implements Packet<INetHandlerLoginClient> {
-   private byte hash;
-   private PublicKey publicKey;
-   private byte[] secretKey;
-   private byte[] ignored;
+    private byte hash;
+    private PublicKey publicKey;
+    private byte[] secretKey;
+    private byte[] ignored;
 
-   public void readPacketData(PacketBuffer var1) throws IOException {
-      this.hash = var1.readByte();
-      this.publicKey =  CryptManager.decodePublicKey(var1.readByteArray());
-      this.secretKey = var1.readByteArray();
-      this.ignored = new byte[22];
-      var1.readBytes(this.ignored, 0, this.ignored.length);
-   }
+    public void readPacketData(PacketBuffer var1) throws IOException {
+        this.hash = var1.readByte();
+        this.publicKey = CryptManager.decodePublicKey(var1.readByteArray());
+        this.secretKey = var1.readByteArray();
+        this.ignored = new byte[22];
+        var1.readBytes(this.ignored, 0, this.ignored.length);
+    }
 
-   public void writePacketData(PacketBuffer var1) throws IOException {
-   }
+    public void writePacketData(PacketBuffer var1) throws IOException {
+    }
 
-   @Override
-   public void processPacket(INetHandlerLoginClient handler) {
-      //handler.handle(this);
-   }
+    @Override
+    public void processPacket(INetHandlerLoginClient handler) {
+        //handler.handle(this);
+    }
 }
