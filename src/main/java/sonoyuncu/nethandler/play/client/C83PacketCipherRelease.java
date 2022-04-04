@@ -1,32 +1,18 @@
 package sonoyuncu.nethandler.play.client;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import net.minecraft.network.Packet;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.INetHandlerPlayServer;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.ShortBufferException;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.google.gson.JsonObject;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.Packet;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.INetHandlerPlayServer;
-import net.minecraft.world.WorldServer;
-import lombok.Getter;
-import lombok.Setter;
-
-@Setter
-@Getter
 public class C83PacketCipherRelease implements Packet<INetHandlerPlayServer> {
 
     private String saltyStr = "NettyIO";
@@ -34,7 +20,6 @@ public class C83PacketCipherRelease implements Packet<INetHandlerPlayServer> {
     private String mode = "PBEWithMD5AndDES";
     private SecretKey key = getSK(saltyStr);
     private Cipher cipher = initCipher(salt, key);
-
     /* sysinf & mcefInfo */
     private String channel;
 

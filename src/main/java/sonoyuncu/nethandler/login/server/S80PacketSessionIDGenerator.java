@@ -3,7 +3,6 @@ package sonoyuncu.nethandler.login.server;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.login.INetHandlerLoginClient;
-import net.minecraft.network.login.INetHandlerLoginServer;
 import net.minecraft.util.CryptManager;
 
 import java.io.IOException;
@@ -11,10 +10,10 @@ import java.security.PublicKey;
 
 
 public class S80PacketSessionIDGenerator implements Packet<INetHandlerLoginClient> {
-    private byte hash;
-    private PublicKey publicKey;
-    private byte[] secretKey;
-    private byte[] ignored;
+    public byte hash;
+    public PublicKey publicKey;
+    public byte[] secretKey;
+    public byte[] ignored;
 
     public void readPacketData(PacketBuffer var1) throws IOException {
         this.hash = var1.readByte();
@@ -29,6 +28,6 @@ public class S80PacketSessionIDGenerator implements Packet<INetHandlerLoginClien
 
     @Override
     public void processPacket(INetHandlerLoginClient handler) {
-        //handler.handle(this);
+        handler.handleSessionID(this);
     }
 }

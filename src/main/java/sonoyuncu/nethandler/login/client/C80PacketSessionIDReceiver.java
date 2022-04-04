@@ -1,21 +1,14 @@
 package sonoyuncu.nethandler.login.client;
 
-import java.io.IOException;
-
+import com.google.common.base.Charsets;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.login.INetHandlerLoginClient;
 import net.minecraft.network.login.INetHandlerLoginServer;
 import net.minecraft.util.CryptManager;
-import net.minecraft.util.IChatComponent;
-import com.google.common.base.*;
-
-import java.io.*;
-import java.security.PublicKey;
-
-import net.minecraft.*;
 
 import javax.crypto.SecretKey;
+import java.io.IOException;
+import java.security.PublicKey;
 
 public class C80PacketSessionIDReceiver implements Packet<INetHandlerLoginServer> {
     private byte data;
@@ -45,7 +38,7 @@ public class C80PacketSessionIDReceiver implements Packet<INetHandlerLoginServer
         this.secretKeyEncrypted = CryptManager.encryptData((java.security.Key) publicKey, (byte[]) secretKey.getEncoded());
         try {
             this.verifyTokenEncrypted1 = CryptManager.encryptData((java.security.Key) publicKey, (byte[]) arrby);
-            this.data = data0;
+            this.data0 = data0;
             this.verifyTokenEncrypted = CryptManager.encryptData((java.security.Key) secretKey, (byte[]) arrby2);
             this.verifyTokenEncrypted0 = CryptManager.encryptData((java.security.Key) secretKey, (byte[]) string.getBytes(com.google.common.base.Charsets.UTF_8));
         } catch (Exception nR2) {
