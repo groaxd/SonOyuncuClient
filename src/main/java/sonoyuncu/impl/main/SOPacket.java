@@ -11,11 +11,17 @@ import net.minecraft.client.gui.GuiDownloadTerrain;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.*;
+import net.minecraft.network.play.client.C02PacketUseEntity;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S01PacketJoinGame;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldSettings;
 import sonoyuncu.impl.event.ThePacket;
+import sonoyuncu.impl.event.TheTwoBuffer;
 import sonoyuncu.nethandler.login.client.C80PacketSessionIDReceiver;
 import sonoyuncu.nethandler.login.server.S80PacketSessionIDGenerator;
 import sonoyuncu.nethandler.play.client.C83PacketCipherRelease;
@@ -94,6 +100,77 @@ public enum SOPacket {
 
     public final void setState(State State) {
         this.state = State;
+    }
+
+    @Subscribe
+    public void writePacket(TheTwoBuffer theEvent)
+    {
+        Packet<?> packet = theEvent.packet;
+        PacketBuffer buf = theEvent.buf;
+        if(packet instanceof C02PacketUseEntity)
+        {
+            C02PacketUseEntity packetUseEntity = (C02PacketUseEntity) packet;
+            theEvent.cancelled = true;
+            buf.writeVarIntToBuffer(packetUseEntity.entityId);
+            C02PacketUseEntity.Action action = ReflectionUtil.get(ReflectionUtil.getField("action", C02PacketUseEntity.class), packetUseEntity);
+            Vec3 hitVec = ReflectionUtil.get(ReflectionUtil.getField("hitVec", C02PacketUseEntity.class), packetUseEntity);
+            buf.writeEnumValue(action);
+
+            if (action == C02PacketUseEntity.Action.INTERACT_AT)
+            {
+                buf.writeFloat((float)hitVec.xCoord);
+                buf.writeFloat((float)hitVec.yCoord);
+                buf.writeFloat((float)hitVec.zCoord);
+            }
+            if(this.isOnSonOyuncu())
+            {
+                Entity entity =  game.theWorld.getEntityByID(packetUseEntity.entityId);
+
+                buf.writeDouble(entity.getEntityBoundingBox().getAverageEdgeLength());
+            }
+        }
+        if(packet instanceof C03PacketPlayer)
+        {
+            C03PacketPlayer c03PacketPlayer = (C03PacketPlayer) packet;
+            theEvent.cancelled = true;
+
+            Boolean onGround = ReflectionUtil.get(ReflectionUtil.getField("onGround", C03PacketPlayer.class), c03PacketPlayer);
+
+            buf.writeByte(onGround.booleanValue() ? 1 : 0);
+            if(isOnSonOyuncu()) {
+                buf.writeFloat(game.thePlayer.distanceWalkedModified - game.thePlayer.prevDistanceWalkedModified);
+            }
+        }
+        if(packet instanceof C03PacketPlayer.C06PacketPlayerPosLook)
+        {
+            C03PacketPlayer.C06PacketPlayerPosLook c03PacketPlayer = (C03PacketPlayer.C06PacketPlayerPosLook) packet;
+            theEvent.cancelled = true;
+            buf.writeDouble(c03PacketPlayer.x);
+            buf.writeDouble(c03PacketPlayer.y);
+            buf.writeDouble(c03PacketPlayer.z);
+            buf.writeFloat(c03PacketPlayer.yaw);
+            buf.writeFloat(c03PacketPlayer.pitch);
+            Boolean onGround = ReflectionUtil.get(ReflectionUtil.getField("onGround", C03PacketPlayer.C06PacketPlayerPosLook.class), c03PacketPlayer);
+            buf.writeByte(onGround.booleanValue() ? 1 : 0);
+            if(isOnSonOyuncu()) {
+                buf.writeFloat(0);
+            }
+            if(isOnSonOyuncu()) {
+                buf.writeShort(Short.MIN_VALUE);
+            }
+        }
+        if(packet instanceof C09PacketHeldItemChange)
+        {
+            C09PacketHeldItemChange c03PacketPlayer = (C09PacketHeldItemChange) packet;
+            theEvent.cancelled = true;
+            Integer slotId = ReflectionUtil.get(ReflectionUtil.getField("slotId", C09PacketHeldItemChange.class), c03PacketPlayer);
+
+            buf.writeShort(slotId.intValue());
+            if(isOnSonOyuncu())
+            {
+                buf.writeInt(0);
+            }
+        }
     }
 
     @Subscribe
