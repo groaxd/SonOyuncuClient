@@ -107,6 +107,9 @@ public enum SOPacket {
     {
         Packet<?> packet = theEvent.packet;
         PacketBuffer buf = theEvent.buf;
+        
+        /* Cancelling the packet(s) due to don't write data */
+        
         if(packet instanceof C02PacketUseEntity)
         {
             C02PacketUseEntity packetUseEntity = (C02PacketUseEntity) packet;
@@ -150,7 +153,7 @@ public enum SOPacket {
             buf.writeDouble(c03PacketPlayer.z);
             buf.writeFloat(c03PacketPlayer.yaw);
             buf.writeFloat(c03PacketPlayer.pitch);
-            Boolean onGround = ReflectionUtil.get(ReflectionUtil.getField("onGround", C03PacketPlayer.C06PacketPlayerPosLook.class), c03PacketPlayer);
+            Boolean onGround = ReflectionUtil.get(ReflectionUtil.getField("onGround", C03PacketPlayer.class), c03PacketPlayer);
             buf.writeByte(onGround.booleanValue() ? 1 : 0);
             if(isOnSonOyuncu()) {
                 buf.writeFloat(0);
