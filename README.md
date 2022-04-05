@@ -4,7 +4,7 @@
 * [Nasıl kullanırım?](#Usage)
 
 # TODO
-- Session ID Generator via Native
+- Maybe how to get Session ID ? (I don't release my auto generator due to pasters)
 
 ## Usage
 ```java
