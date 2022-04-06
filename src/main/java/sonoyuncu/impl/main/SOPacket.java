@@ -5,7 +5,6 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import io.netty.buffer.Unpooled;
-import mchorse.mclib.math.functions.limit.Min;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDownloadTerrain;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
@@ -13,22 +12,16 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.*;
-import net.minecraft.network.play.client.C02PacketUseEntity;
+import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.network.play.client.C09PacketHeldItemChange;
-import net.minecraft.network.play.client.C17PacketCustomPayload;
-import net.minecraft.network.play.server.S01PacketJoinGame;
+import net.minecraft.network.play.server.*;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldSettings;
-import sonoyuncu.impl.event.ThePacket;
-import sonoyuncu.impl.event.TheTwoBuffer;
+import sonoyuncu.impl.event.*;
 import sonoyuncu.nethandler.login.client.C80PacketSessionIDReceiver;
 import sonoyuncu.nethandler.login.server.S80PacketSessionIDGenerator;
-import sonoyuncu.nethandler.play.client.C83PacketCipherRelease;
-import sonoyuncu.nethandler.play.server.S80PacketProfile;
-import sonoyuncu.nethandler.play.server.S81PacketScoreboard;
-import sonoyuncu.nethandler.play.server.S82PacketChingChong;
-import sonoyuncu.nethandler.play.server.S83PacketSkiddedChunk;
+import sonoyuncu.nethandler.play.client.*;
+import sonoyuncu.nethandler.play.server.*;
 import sonoyuncu.util.ReflectionUtil;
 
 import java.nio.charset.StandardCharsets;
@@ -156,10 +149,8 @@ public enum SOPacket {
             Boolean onGround = ReflectionUtil.get(ReflectionUtil.getField("onGround", C03PacketPlayer.class), c03PacketPlayer);
             buf.writeByte(onGround.booleanValue() ? 1 : 0);
             if(isOnSonOyuncu()) {
-                buf.writeFloat(0);
-            }
-            if(isOnSonOyuncu()) {
-                buf.writeShort(Short.MIN_VALUE);
+                buf.writeFloat(game.thePlayer.distanceWalkedModified - game.thePlayer.prevDistanceWalkedModified);
+                buf.writeShort(Short.MIN_VALUE); //0
             }
         }
         if(packet instanceof C09PacketHeldItemChange)
@@ -171,7 +162,7 @@ public enum SOPacket {
             buf.writeShort(slotId.intValue());
             if(isOnSonOyuncu())
             {
-                buf.writeInt(0);
+                buf.writeInt(0); //0 | 18
             }
         }
     }
